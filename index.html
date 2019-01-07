@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Pendulum Visualizer</title>
+
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
+	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon/favicon.ico') }}">
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<script src="vis.js"></script>
+
+
+</head>
+
+<body>
+	
+	<div class="controls">
+
+        <button id="speedDown" class="control-button" style="margin-right: 0;" onclick="speedDown()">
+            <i class="material-icons" style="font-size:45px">remove</i>
+        </button>
+
+        <div id="speed-label" class="control-button control-text" style="display: inline-block;">1</div>
+
+
+
+
+        <button id="speedUp" class="control-button" style="margin-left: 0;" onclick="speedUp()">
+            <i class="material-icons" style="font-size:45px">add</i>
+        </button>
+
+        <button id="pauseButton" class="control-button" onclick="togglePaused()">
+            <i class="material-icons" style="font-size:50px">pause</i>
+        </button>
+		<button id="fullscreenButton" class="control-button" onclick="toggleFullscreen()">
+			<i class="material-icons" style="font-size:50px">fullscreen</i>
+		</button>
+
+
+	</div>
+
+
+    <button id="hide-controls-button" class="control-button" onclick="toggleControls()">
+            <i id="controls-toggle-icon" class="material-icons" style="font-size:50px">keyboard_arrow_up</i>
+    </button>
+
+</body>
