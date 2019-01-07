@@ -180,25 +180,19 @@ $(document).ready(function(){
 		doResize()
   	});
 
-  	$(window).keypress(function (e) {
-  		console.log(e.keyCode);
-	 	if (e.key === ' ' || e.key === 'Spacebar') {
-	    	// ' ' is standard, 'Spacebar' was used by IE9 and Firefox < 37
-	    	e.preventDefault();
-	    	togglePaused();
-	  	}
-	})
 	document.onkeydown = checkKey;
 	function checkKey(e) {
 	    e = e || window.event;
 	    if (e.keyCode == '37') {
 	      	e.preventDefault();
 	    	speedDown();
-	    }
-	    else if (e.keyCode == '39') {
+	    }else if (e.keyCode == '39') {
 	      	e.preventDefault();
 	    	speedUp();
-    	}
+    	}else if (e.key == '' || e.key === 'Spacebar'){
+            e.preventDefault();
+            togglePaused();
+        }
 	}
 
 	function updateBallsColor(){
