@@ -66,12 +66,12 @@ html, body{
 
 .control-text{
     text-align:center; 
-    /*font-family: 'Material Icons';*/ 
+    font-family: 'Arial'; 
     font-weight: normal;
     font-style: normal;
-    font-size: 36px;
+    font-size: 32px;
     line-height: 50px;
-    width: 45px;
+    width: 60px;
     margin: 0;
     
 }

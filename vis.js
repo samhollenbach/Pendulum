@@ -58,14 +58,16 @@ function makeBall(posX, posY){
   	return d;
 }
 
+function updateSpeedLabel(){
+	$('#speed-label').text(speeds[ballSpeedIndex] + 'x');
+}
 function speedUp(){
 	if (ballSpeedIndex == speeds.length-1){
 		return
 	}
 	ballSpeedIndex += 1;
 	ballSpeed = speeds[ballSpeedIndex];
-	// speedUpdate = 0.005;
-	$('#speed-label').text(speeds[ballSpeedIndex]);
+	updateSpeedLabel();
 }
 function speedDown(){
 	if (ballSpeedIndex == 0){
@@ -73,9 +75,9 @@ function speedDown(){
 	}
 	ballSpeedIndex -= 1;
 	ballSpeed = speeds[ballSpeedIndex];
-	// speedUpdate = -0.005;
-	$('#speed-label').text(speeds[ballSpeedIndex]);
+	updateSpeedLabel();
 }
+
 
 function toggleControls(){
 	controlsShowing = !controlsShowing;
@@ -87,6 +89,25 @@ function toggleControls(){
 		$('#controls-toggle-icon').text('keyboard_arrow_down')
 	}
 	
+}
+
+
+function updateBackgroundColor(){
+	var i;
+	for (i = 0; i < 3; i++){
+		BACKGROUND_RGB[i] += RGB_INC_1[i];
+		if (BACKGROUND_RGB[i] >= 255){
+			BACKGROUND_RGB[i] = 255;
+			RGB_INC_1[i] = -RGB_INC_1[i];
+		}else if (BACKGROUND_RGB[i] <= 0){
+			BACKGROUND_RGB[i] = 0;
+			RGB_INC_1[i] = -RGB_INC_1[i];
+		}
+	}
+	document.documentElement.style.setProperty('--main-bg-color', 'rgb(' 
+		+ BACKGROUND_RGB[0] + ', '
+		+ BACKGROUND_RGB[1] + ', '
+		+ BACKGROUND_RGB[1] + ')')
 }
 
 
@@ -113,6 +134,13 @@ var speedUpdate = 0;
 
 var controlsShowing = true;
 
+var RGB_INC_1 = [3, 4, 5];
+
+var BACKGROUND_RGB = [100, 0, 200];
+
+// var BALLS_RGB = [100, 0, 200];
+
+
 $(document).ready(function(){
 
 	var balls = [];
@@ -128,8 +156,7 @@ $(document).ready(function(){
         return y;
  	}
 
- 	$('#speed-label').text(speeds[ballSpeedIndex]);
-	
+ 	updateSpeedLabel();
 
 	document.documentElement.style.setProperty('--ball-diam', ballDiam + 'px')
 	document.documentElement.style.setProperty('--ball-rad', (ballDiam/2) + 'px')
@@ -150,26 +177,17 @@ $(document).ready(function(){
 	    	togglePaused();
 	  	}
 	})
-
 	document.onkeydown = checkKey;
-
 	function checkKey(e) {
 	    e = e || window.event;
-	    // if (e.keyCode == '38') {
-	    //     // up arrow
-	    // }
-	    // else if (e.keyCode == '40') {
-	    //     // down arrow
-	    // }
 	    if (e.keyCode == '37') {
-	       e.preventDefault();
+	      	e.preventDefault();
 	    	speedDown();
 	    }
 	    else if (e.keyCode == '39') {
-	       e.preventDefault();
+	      	e.preventDefault();
 	    	speedUp();
     	}
-
 	}
 
  	function setBallsX(){
@@ -213,6 +231,7 @@ $(document).ready(function(){
   			// }else if (speedUpdate != 0){
   			// 	speedUpdate = 0;
   			// }
+  			updateBackgroundColor();
 
   			var k;
 	  		for (k = 0; k < balls.length; k++){
