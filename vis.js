@@ -32,6 +32,11 @@ function closeFullscreen() {
 	}
 }
 
+function restartLoop(){
+	COUNTER = 0;
+}
+
+
 function togglePaused(){
 	isPaused = !isPaused;
 	if (isPaused){
@@ -93,8 +98,7 @@ function toggleControls(){
 
 
 function updateBackgroundColor(){
-	var i;
-	for (i = 0; i < 3; i++){
+	for (var i = 0; i < 3; i++){
 		BACKGROUND_RGB[i] += RGB_INC_1[i];
 		if (BACKGROUND_RGB[i] >= 255){
 			BACKGROUND_RGB[i] = 255;
@@ -112,9 +116,7 @@ function updateBackgroundColor(){
 
 
 
-
-
-const NUM_BALLS = 20;
+var NUM_BALLS = 20;
 
 var COUNTER = 0;
 
@@ -122,7 +124,12 @@ var isPaused = false;
 
 const LOOP_SPEED = 30;
 
-var ballDiam = 25;
+const minHeightScale = 0.6;
+var heightScale = 1.0;
+var heightScaleUpdate = -0.01;
+
+var ballDiamBase = 15;
+var ballDiam = ballDiamBase;
 
 var ballSpeedIndex = 3;
 
@@ -138,6 +145,8 @@ var RGB_INC_1 = [3, 4, 5];
 
 var BACKGROUND_RGB = [100, 0, 200];
 
+
+
 // var BALLS_RGB = [100, 0, 200];
 
 
@@ -148,25 +157,27 @@ $(document).ready(function(){
 	var horizMargin = $(window).width() * 0.05;
 	var vertMagin = $(window).height() * 0.1;
 
-	var width = $(window).width() - (2*horizMargin);
-	var height = $(window).height() - (2*vertMagin);
+	var scaleVertMargin = 0;
 
-	function getY(ballIndex, counter){
-		var y = vertMagin + (height/2 *  (1 + Math.sin((counter * (ballSpeed * ballIndex/1000 + 0.02)) % 2*Math.PI)));
-        return y;
- 	}
+	var width = $(window).width() - (2*horizMargin);
+
+	var height = heightScale * $(window).height() - (2*vertMagin);
+
 
  	updateSpeedLabel();
 
-	document.documentElement.style.setProperty('--ball-diam', ballDiam + 'px')
-	document.documentElement.style.setProperty('--ball-rad', (ballDiam/2) + 'px')
 
-  	$(window).resize(function(){
-		horizMargin = $(window).width() * 0.05;
+ 	function doResize(){
+ 		horizMargin = $(window).width() * 0.05;
 		vertMagin = $(window).height() * 0.1;
 		width = $(window).width() - (2*horizMargin);
 		height = $(window).height() - (2*vertMagin);
+		ballDiamBase = width / (NUM_BALLS * 2);
 		setBallsX()
+ 	}
+	
+  	$(window).resize(function(){
+		doResize()
   	});
 
   	$(window).keypress(function (e) {
@@ -190,58 +201,87 @@ $(document).ready(function(){
     	}
 	}
 
+	function updateBallsColor(){
+		for (var n = 0; n < NUM_BALLS; n++){
+			var r = BACKGROUND_RGB[0] + ((n/NUM_BALLS)*(BACKGROUND_RGB[1] - BACKGROUND_RGB[0]));
+			var g = BACKGROUND_RGB[1] + ((n/NUM_BALLS)*(BACKGROUND_RGB[2] - BACKGROUND_RGB[1]));
+			var b = BACKGROUND_RGB[2] + ((n/NUM_BALLS)*(BACKGROUND_RGB[0] - BACKGROUND_RGB[2]));
+
+			var rgb = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+
+			balls[n].style.backgroundColor = rgb;
+
+		}
+	}
+
  	function setBallsX(){
- 		var nballs = balls.length;
- 		var bspace = width / (nballs);
- 		var j;
-  		for (j = 0; j < nballs; j++){
+ 		var bspace = width / NUM_BALLS;
+  		for (var j = 0; j < NUM_BALLS; j++){
   			var x = horizMargin  + (j*bspace) + (bspace/2) - (ballDiam/2);
   			balls[j].style.left = x + 'px';
   		}
   	}
 
+  	function getY(ballIndex, counter){
+		var y = vertMagin + scaleVertMargin + (height/2 *  (1 + Math.sin((counter * (ballSpeed * ballIndex/400 + 0.02)) % 2*Math.PI)));
+        return y;
+ 	}
   	function setBallsY(){
-  		var nballs = balls.length;
- 		var j;
-  		for (j = 0; j < nballs; j++){
+  		for (var j = 0; j < NUM_BALLS; j++){
   			var y = getY(j, COUNTER);
   			balls[j].style.top = y + 'px';
   		}
   	}
 
-  	var i;
-  	for (i = 0; i < NUM_BALLS; i++){
-  		var b = makeBall(0, 200);
-  		balls.push(b);
-  		$("body").prepend(b);
+  	function createBalls(N){
+	  	for (var i = 0; i < N; i++){
+	  		var b = makeBall(0, 200);
+	  		balls.push(b);
+	  		$("body").prepend(b);
+	  	}
+	  	setBallsX();
+
   	}
-  	setBallsX();
+
+  	function updateHeightScale(){
+  		heightScale += heightScaleUpdate;
+  		if (heightScale <= minHeightScale || heightScale >= 1.0){
+  			heightScaleUpdate *= -1;
+  		}
+  		var h = $(window).height() - (2*vertMagin);
+  		scaleVertMargin = (1.0 - heightScale)/2 * h;
+		height = heightScale * h;
+		updateBallSize();
+  	}
+
+  	function updateBallSize(){
+  		ballDiam = ballDiamBase + ((heightScale - minHeightScale)* 8);
+  		console.log(heightScale);
+  		console.log(ballDiam)
+  		document.documentElement.style.setProperty('--ball-diam', ballDiam + 'px')
+		document.documentElement.style.setProperty('--ball-rad', (ballDiam/2) + 'px')
+
+  	}
 
 
-
-
-
+  	
+  	createBalls(NUM_BALLS);
+  	doResize();
   	
   	setInterval(function(){ 
   		if (!isPaused){
 
-  			// if ((speedUpdate < 0 && ballSpeed > speeds[ballSpeedIndex]) 
-  			// 	|| (speedUpdate > 0 && ballSpeed < speeds[ballSpeedIndex])){
-  			// 	ballSpeed += speedUpdate;
-  			// }else if (speedUpdate != 0){
-  			// 	speedUpdate = 0;
-  			// }
   			updateBackgroundColor();
+  			updateBallsColor();
 
-  			var k;
-	  		for (k = 0; k < balls.length; k++){
+  			if (COUNTER % 8 == 0){
+				updateHeightScale();
+  			}
+  			
+  			setBallsY();
 
-	  			// var y = parseInt(balls[k].style.top);
-	  			// y += 1;
 
-	  			// balls[k].style.top = y + 'px';
-	  			setBallsY();
-	  		}
+
 	  		COUNTER += 1;
   		}
   		
