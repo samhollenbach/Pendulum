@@ -2,9 +2,9 @@
 
 Based on the (Pendulum Wave effect)[https://www.youtube.com/watch?v=yVkdfJ9PkRQ], this simple yet mezmerizing visualizer fits nearly any music.
 
-# The Math
+## The Math
 
-The visualization effect is based on this simple function
+The visualization effect is based on this simple function:
 
 ```
 function getY(i, t){
