@@ -1,6 +1,6 @@
 # Pendulum Visualizer
 
-Based on the (Pendulum Wave effect)[https://www.youtube.com/watch?v=yVkdfJ9PkRQ], this simple yet mezmerizing visualizer fits nearly any music.
+Based on the [Pendulum Wave effect](https://www.youtube.com/watch?v=yVkdfJ9PkRQ), this simple yet mezmerizing visualizer fits nearly any music.
 
 ## The Math
 
