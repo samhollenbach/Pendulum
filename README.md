@@ -2,7 +2,13 @@
 
 Based on the [Pendulum Wave effect](https://www.youtube.com/watch?v=yVkdfJ9PkRQ), this simple yet mezmerizing visualizer fits nearly any music.
 
-## The Math
+
+## Finished Product
+
+Find the most recent version of this project hosted at https://samhollenbach.com/visualizer
+
+
+## How It Works
 
 The visualization effect is based on this simple function:
 
@@ -14,9 +20,9 @@ function getY(i, t){
 This function returns the current Y coordinate of the ball at index `i` at time `t`, scaled to fit height `height`. The constants can be adjusted to change the speed and behavior.
 
 
-## Technical Details
+## Tech Specs
 
-HTML / CSS
+HTML5 / CSS3
 
-JQuery / Javascript
+JQuery / JavaScript ES6
 
